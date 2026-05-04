@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: loom-postgres
     environment:
       POSTGRES_DB: loom
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - loom-network
     healthcheck:
@@ -26,7 +26,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: password
       JWT_SECRET: 5up3r53cr37k3y7h4715l0ng3n0ughf0rh52564lg0r17hm
-      JWT_EXPIRATION: 86400000
+      JWT_EXPIRATION: 1000000
+      JWT_REFRESH_EXPIRATION: 6000000
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,7 +42,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: password
       JWT_SECRET: 5up3r53cr37k3y7h4715l0ng3n0ughf0rh52564lg0r17hm
-      JWT_EXPIRATION: 86400000
+      JWT_EXPIRATION: 1000000
+      JWT_REFRESH_EXPIRATION: 6000000
     depends_on:
       postgres:
         condition: service_healthy

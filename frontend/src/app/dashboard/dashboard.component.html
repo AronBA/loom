@@ -87,7 +87,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-700/50">
-                    <tr *ngFor="let log of logs" class="hover:bg-slate-700/20 transition-colors group">
+                    <tr *ngFor="let log of logs; trackBy: trackByLogId" class="hover:bg-slate-700/20 transition-colors group">
                         <td class="px-6 py-4 text-slate-400 text-sm whitespace-nowrap font-mono">
                             {{ log.timestamp | date:'MMM d, HH:mm:ss' }}
                         </td>

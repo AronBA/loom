@@ -13,7 +13,8 @@ export class LogService {
     getLogs(page: number, size: number, level?: string, source?: string, search?: string, startDate?: string, endDate?: string): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
-            .set('size', size.toString());
+            .set('size', size.toString())
+            .set('_', new Date().getTime().toString()); // Cache buster
 
         if (level) params = params.set('level', level);
         if (source) params = params.set('source', source);
