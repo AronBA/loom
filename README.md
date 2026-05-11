@@ -67,6 +67,28 @@ To generate sample logs for the dashboard:
 python3 scripts/generate_random_logs.py
 ```
 
+## Authentication & Security
+
+The system implements a secure, OWASP-compliant authentication flow using JWTs and Refresh Tokens stored in **HttpOnly Cookies**.
+
+### Key Features
+-   **HttpOnly Cookies**: Prevents XSS attacks by ensuring tokens cannot be accessed via JavaScript.
+-   **Token Rotation**: Every time a refresh token is used, it is deleted and a new one is issued. This detects and mitigates token theft.
+-   **Stateless Access Tokens**: Short-lived JWTs for performance.
+-   **Stateful Refresh Tokens**: Stored in the database for control over user sessions.
+
+### Flow Logic
+1.  **Login**: User provides credentials -> Backend validates -> Backend issues an Access Token (JWT) and a Refresh Token (UUID) -> Both are sent to the browser as `Set-Cookie` headers.
+2.  **Authorized Requests**: The browser automatically includes the cookies in every request to `/api`. The backend validates the JWT.
+3.  **Token Refresh**: When the JWT expires, the frontend (via an interceptor) calls `/api/auth/refresh`. The backend verifies the refresh token, deletes it, and issues a brand-new pair of tokens.
+4.  **Logout**: The backend deletes the refresh token from the database and instructs the browser to clear the cookies.
+
+### Relevant Files
+-   **Logic & Controller**: [AuthController.java](file:///Users/aron/loom/backend/src/main/java/com/loom/backend/controller/AuthController.java)
+-   **Token Management**: [RefreshTokenService.java](file:///Users/aron/loom/backend/src/main/java/com/loom/backend/service/RefreshTokenService.java)
+-   **JWT Utilities**: [JwtUtils.java](file:///Users/aron/loom/backend/src/main/java/com/loom/backend/security/JwtUtils.java)
+-   **Security Configuration**: [WebSecurityConfig.java](file:///Users/aron/loom/backend/src/main/java/com/loom/backend/security/WebSecurityConfig.java)
+
 ## Development
 
 -   **Backend**: Located in `backend/`. Uses Spring Boot, Spring Security (JWT), and Flyway.
