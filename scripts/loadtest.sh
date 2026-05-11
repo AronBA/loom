@@ -40,8 +40,8 @@ echo "Successfully logged in."
 
 echo "Starting load test with hey..."
 echo "Target: GET http://127.0.0.1/api/logs"
-echo "Concurrency: 50, Duration: 60s"
+echo "Concurrency: 50, Duration: 30s"
 
-hey -m GET -c 50 -z 60s \
+hey -m GET -c 50 -z 30s \
   -H "Cookie: loom_access_token=$COOKIE_VAL" \
   http://127.0.0.1/api/logs
