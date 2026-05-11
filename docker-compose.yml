@@ -32,10 +32,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - loom-network
-    ports:
-      - "8081:8080"
 
   backend-2:
     build: ./backend
@@ -50,6 +54,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - loom-network
 
@@ -59,8 +69,10 @@ services:
     networks:
       - loom-network
     depends_on:
-      - backend-1
-      - backend-2
+      backend-1:
+        condition: service_healthy
+      backend-2:
+        condition: service_healthy
 
   nginx:
     image: nginx:alpine
@@ -70,9 +82,12 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - frontend
-      - backend-1
-      - backend-2
+      frontend:
+        condition: service_started
+      backend-1:
+        condition: service_healthy
+      backend-2:
+        condition: service_healthy
     networks:
       - loom-network
 
