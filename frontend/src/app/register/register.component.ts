@@ -13,6 +13,7 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent {
     registerForm: FormGroup;
+    isLoading: boolean = false;
     errorMessage: string = '';
     successMessage: string = '';
 
@@ -28,7 +29,10 @@ export class RegisterComponent {
     }
 
     onSubmit(): void {
-        if (this.registerForm.valid) {
+        if (this.registerForm.valid && !this.isLoading) {
+            this.isLoading = true;
+            this.errorMessage = '';
+            this.successMessage = '';
             this.authService.register(this.registerForm.value).subscribe({
                 next: () => {
                     this.successMessage = 'Registration successful! Redirecting to login...';
@@ -36,6 +40,7 @@ export class RegisterComponent {
                 },
                 error: (err) => {
                     this.errorMessage = err.error?.message || 'Registration failed.';
+                    this.isLoading = false;
                 }
             });
         }

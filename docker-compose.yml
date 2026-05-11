@@ -12,6 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql
     networks:
       - loom-network
+    command: ["postgres", "-c", "max_connections=200"]
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -33,6 +34,8 @@ services:
         condition: service_healthy
     networks:
       - loom-network
+    ports:
+      - "8081:8080"
 
   backend-2:
     build: ./backend

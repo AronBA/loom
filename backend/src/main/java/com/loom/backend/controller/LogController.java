@@ -3,7 +3,7 @@ package com.loom.backend.controller;
 import com.loom.backend.model.LogEntry;
 import com.loom.backend.repository.LogEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +20,7 @@ public class LogController {
     LogEntryRepository logEntryRepository;
 
     @GetMapping
-    public ResponseEntity<Page<LogEntry>> getAllLogs(
+    public ResponseEntity<Slice<LogEntry>> getAllLogs(
             @RequestParam(required = false) String level,
             @RequestParam(required = false) String source,
             @RequestParam(required = false) String search,
@@ -38,9 +38,9 @@ public class LogController {
 
         org.springframework.data.jpa.domain.Specification<LogEntry> spec = com.loom.backend.repository.LogSpecification
                 .getSpecs(level, source, search, startDate, endDate);
-        Page<LogEntry> pageLogs = logEntryRepository.findAll(spec, paging);
+        Slice<LogEntry> sliceLogs = logEntryRepository.findAll(spec, paging);
 
-        return ResponseEntity.ok(pageLogs);
+        return ResponseEntity.ok(sliceLogs);
     }
 
     @PostMapping

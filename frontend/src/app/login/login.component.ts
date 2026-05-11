@@ -13,6 +13,7 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent {
     loginForm: FormGroup;
+    isLoading: boolean = false;
     errorMessage: string = '';
 
     constructor(
@@ -27,13 +28,16 @@ export class LoginComponent {
     }
 
     onSubmit(): void {
-        if (this.loginForm.valid) {
+        if (this.loginForm.valid && !this.isLoading) {
+            this.isLoading = true;
+            this.errorMessage = '';
             this.authService.login(this.loginForm.value).subscribe({
                 next: () => {
                     this.router.navigate(['/dashboard']);
                 },
                 error: (err) => {
                     this.errorMessage = 'Login failed. Please check your credentials.';
+                    this.isLoading = false;
                     console.error(err);
                 }
             });
